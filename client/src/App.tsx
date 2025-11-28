@@ -1,8 +1,19 @@
-export default function App() {
+import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
+import { AppLayout } from './components/Layout/AppLayout';
+import './index.css';
+
+function AppContent() {
+  return <AppLayout />;
+}
+
+export function App() {
   return (
-    <div style={{ padding: "20px", color: "white" }}>
-      <h1>Climate Visualizer</h1>
-      <p>Redux setup OK. Layout incoming…</p>
-    </div>
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   );
 }
+
+export default App;
