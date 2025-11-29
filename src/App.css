@@ -1,42 +1,87 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9fafb;
+  color: #111827;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* HEADER */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+  background-color: #ffffff;
+  position: relative;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.logo-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 2px solid #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  position: absolute;
+  left: 1.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.app-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
-.card {
-  padding: 2em;
+.app-layout {
+  flex: 1;
+  display: grid;                          /* ⬅ IMPORTANT */
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 0;
 }
 
-.read-the-docs {
-  color: #888;
+/* COLONNE GAUCHE */
+.sidebar {
+  background-color: #f3f4f6;
+  border-right: 2px solid #e5e7eb;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
 }
+
+/* COLONNE DROITE */
+.main-panel {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0; /* important pour que la map prenne la largeur */
+}
+
+/* MAP */
+.map-shell {
+  flex: 1;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+  background-color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+}
+
+.map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ANIMATION & VIEWS : tu peux garder ce que tu avais déjà,
+   ça ne joue pas sur la disposition globale */
