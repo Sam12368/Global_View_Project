@@ -1,0 +1,28 @@
+/* src/components/WorldMap/WorldMap.css */
+
+.map-shell {
+  position: relative;
+  flex: 1;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+  background-color: transparent;
+  overflow: hidden;
+  min-height: 260px;
+  border: black;
+}
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: black;
+}
+
+.map-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+/* évite une vieille bordure autour des cellules au hover */
+.map-cell {
+  cursor: pointer;
+}

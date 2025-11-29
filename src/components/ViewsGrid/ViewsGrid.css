@@ -1,0 +1,21 @@
+.viewsgrid-root {
+  display: flex;
+  gap: 0.5rem;
+  min-height: 80px;
+  
+}
+
+.viewsgrid-card {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.viewsgrid-placeholder {
+  font-size: 0.9rem;
+  color: #6b7280;
+ 
+}
