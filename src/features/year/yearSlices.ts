@@ -15,6 +15,9 @@ export const yearSlice = createSlice({
       state.currentYear = action.payload;
     }
     ,
+    changeYearTo: (state, action: PayloadAction<number>) => {
+      state.currentYear = action.payload;
+    },
     nextYear: (state) => {
       state.currentYear =Math.min(state.currentYear + 1, 2025);
     },
@@ -24,6 +27,6 @@ export const yearSlice = createSlice({
     },
 });
 
-export const { setYear, nextYear, prevYear } = yearSlice.actions;
+export const { setYear, nextYear, prevYear, changeYearTo } = yearSlice.actions;
 export const selectCurrentYear = (state: RootState) => state.year.currentYear;
 export default yearSlice.reducer;

@@ -4,7 +4,7 @@ import { useAnimation } from "../../hooks/useAnimation";
 import { useYear } from "../../hooks/useYear";
 
 export default function AnimationBar() {
-  const { currentYear, setYear, next } = useYear();
+  const { currentYear, setYear, next, changeYearTo } = useYear();
   const { playing, play, pause, speed, setSpeed } = useAnimation();
   const min = 1880;
   const max = 2025;
@@ -16,7 +16,7 @@ export default function AnimationBar() {
 
   useEffect(() => {
     if (!playing) return;
-    const baseDelay = 600;
+    const baseDelay = 50;
     const delay = baseDelay / speed;
     const id = setInterval(() => {
       next();
@@ -47,7 +47,10 @@ export default function AnimationBar() {
           <button className="anim-btn" type="button" onClick={() => (playing ? pause() : play())}>
             {playing ? "⏸" : "▶"}
           </button>
-          <button className="anim-btn" type="button" onClick={() => setYear(min)}>
+          <button className="anim-btn" type="button" onClick={() => {
+            setYear(min);
+            play();
+          }}>
             ⟲
           </button>
           <span className="animation-bar-speed">

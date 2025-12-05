@@ -1,0 +1,35 @@
+.heatmap-view {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.heatmap-view h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.heatmap-container {
+  overflow: auto;
+  max-height: 500px;
+  max-width: 100%;
+}
+
+.heatmap-svg {
+  display: block;
+}
+
+.heatmap-info {
+  margin-top: 12px;
+  text-align: center;
+  color: #666;
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-style: italic;
+}

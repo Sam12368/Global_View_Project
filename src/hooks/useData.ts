@@ -22,7 +22,7 @@ function lerpColor(c1: string, c2: string, t: number) {
 const COLORS = [
   { t: -3,   color: "#08306B" }, // bleu très foncé
   { t: -1.5, color: "#4292C6" }, // bleu clair
-  { t:  0,   color: "#FDFDFD" }, // quasi blanc
+  { t:  0,   color: "#F0EAD6 "}, // beige crème
   { t:  1.5, color: "#FDB863" }, // jaune-orangé
   { t:  3,   color: "#E66101" }, // orange
   { t:  4,   color: "#B2182B" }, // rouge foncé
@@ -31,6 +31,7 @@ const COLORS = [
 
 function getColorForValue(value: number | null) {
   if (value === null) return "rgba(0,0,0,0)"; // transparent for NA
+
 
   // clamp between -3 and 4
   const v = Math.max(-3, Math.min(4, value));
