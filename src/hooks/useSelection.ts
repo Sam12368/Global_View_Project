@@ -1,27 +1,61 @@
+// src/hooks/useSelection.ts
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { setMode, 
-    addArea, addGroup,
-     addLatitude, addZoneToGroup,
-     removeArea,removeGroup,removeLatitude,
-     removeZoneFromGroup } from "../features/selection/selectionSlices";
+import {
+  setMode,
+  addLatitude,
+  removeLatitude,
+  clearLatitudes,
+  createAreaFromCells,
+  removeArea,
+  clearAreas,
+  createGroupFromAreas,
+  removeGroup,
+  clearGroups,
+  toggleActiveGroup,
+  type SelectionMode,
+} from "../features/selection/selectionSlices";
 
-     export function useSelections() {
-        const state = useAppSelector(state=> state.selection);
-        const dispatch = useAppDispatch();
+/**
+ * Hook custom qui encapsule toute la logique de sélection :
+ * - mode (areas / latitudes)
+ * - zones (areas)
+ * - groupes
+ * - groupes actifs pour comparaison
+ * - fonctions qui dispatchent les bonnes actions Redux
+ */
+export function useSelections() {
+  const state = useAppSelector((s) => s.selection);
+  const dispatch = useAppDispatch();
 
-        return {
-            mode: state.mode,
-            selectedAreas: state.selectedAreas,
-            selectedLatitudes: state.selectedLatitudes,
-            groups: state.groups,
-            setMode: (mode: "areas" | "latitudes") => dispatch(setMode(mode)),
-            addArea: (id: number) => dispatch(addArea(id)),
-            removeArea: (id: number) => dispatch(removeArea(id)),
-            addLatitude: (lat: number) => dispatch(addLatitude(lat)),
-            removeLatitude: (lat: number) => dispatch(removeLatitude(lat)),
-            addGroup: () => dispatch(addGroup()),
-            removeGroup: (id: number) => dispatch(removeGroup(id)),
-            addZoneToGroup: (groupId: number, zoneId: number) => dispatch(addZoneToGroup({groupId, zoneId})),
-            removeZoneFromGroup: (groupId: number, zoneId: number) => dispatch(removeZoneFromGroup({groupId, zoneId})),
-        };
-     }
+  return {
+    // ÉTAT LECTURE
+    mode: state.mode,
+    selectedLatitudes: state.selectedLatitudes,
+    areas: state.areas,               // Zones (Zone 1, Zone 2, ...)
+    groups: state.groups,             // Group 1 = ensemble de zones
+    activeGroupIds: state.activeGroupIds, // groupes cochés pour graphes
+
+    // ACTIONS : MODE
+    setMode: (mode: SelectionMode) => dispatch(setMode(mode)),
+
+    // ACTIONS : LATITUDES
+    addLatitude: (lat: number) => dispatch(addLatitude(lat)),
+    removeLatitude: (lat: number) => dispatch(removeLatitude(lat)),
+    clearLatitudes: () => dispatch(clearLatitudes()),
+
+    // ACTIONS : ZONES (AREAS)
+    createAreaFromCells: (cellIds: number[]) =>
+      dispatch(createAreaFromCells(cellIds)),
+    removeArea: (areaId: number) => dispatch(removeArea(areaId)),
+    clearAreas: () => dispatch(clearAreas()),
+
+    // ACTIONS : GROUPES
+    createGroupFromAreas: (areaIds: number[]) =>
+      dispatch(createGroupFromAreas({ areaIds })),
+    removeGroup: (groupId: number) => dispatch(removeGroup(groupId)),
+    clearGroups: () => dispatch(clearGroups()),
+
+    // ACTIONS : GROUPES ACTIFS
+    toggleActiveGroup: (groupId: number) => dispatch(toggleActiveGroup(groupId)),
+  };
+}
