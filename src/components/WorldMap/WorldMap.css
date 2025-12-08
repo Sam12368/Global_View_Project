@@ -1,28 +1,49 @@
-/* src/components/WorldMap/WorldMap.css */
-
-.map-shell {
-  position: relative;
-  flex: 1;
-  border-radius: 16px;
-  border: 2px solid #e5e7eb;
-  background-color: transparent;
-  overflow: hidden;
-  min-height: 260px;
-  border: black;
-}
-.map-image {
+.worldmap-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.worldmap-canvas {
+  width: 100%;
+  max-width: 1400px;
   height: auto;
   display: block;
-  border: black;
 }
-
-.map-overlay {
+.worldmap-legend {
   position: absolute;
-  inset: 0;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+}
+.worldmap-tooltip {
+  min-width: 170px;
+  max-width: 220px;
+  background: radial-gradient(circle at top left, #1e293b, #020617);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  pointer-events: none;
+  backdrop-filter: blur(10px);
 }
 
-/* évite une vieille bordure autour des cellules au hover */
-.map-cell {
-  cursor: pointer;
+.worldmap-tooltip-title {
+  font-weight: 600;
+  color: #facc15;
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.worldmap-tooltip-line {
+  line-height: 1.3;
+  color: #cbd5f5;
 }
