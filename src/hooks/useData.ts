@@ -1,77 +1,72 @@
 import { useAppSelector } from "../app/hooks";
 import type { TempAnomalyArea } from "../features/data/dataTypes";
 
-// --- color interpolation helpers ---
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
+/* ---------------------------------------------------------
+   🔵 INTERPOLATION LISSEE (Méthode B — Weighted smoothing)
+   --------------------------------------------------------- */
+function interpolateSmooth(
+  data: { year: number; value: number | string }[],
+  targetYear: number
+): number | null {
+
+  // 🔹 Valeur exacte ?
+  const exact = data.find((d) => d.year === targetYear);
+  if (exact && exact.value !== "NA") return exact.value as number;
+
+  // 🔹 Cherche centre, année précédente, année suivante
+  const center = data.find((d) => d.year === targetYear) || null;
+  const prev = data.find((d) => d.year === targetYear - 1) || null;
+  const next = data.find((d) => d.year === targetYear + 1) || null;
+
+  if (!center) return null;
+
+  let c = center.value !== "NA" ? (center.value as number) : null;
+  if (c === null) return null;
+
+  let p =
+    prev && prev.value !== "NA"
+      ? (prev.value as number)
+      : c; // fallback vers la valeur centrale
+
+  let n =
+    next && next.value !== "NA"
+      ? (next.value as number)
+      : c; // fallback vers la valeur centrale
+
+  // 🔥 Smoothing pondéré (0.25 / 0.50 / 0.25)
+  return 0.25 * p + 0.5 * c + 0.25 * n;
 }
 
-function lerpColor(c1: string, c2: string, t: number) {
-  const parse = (c: string) => c.match(/\w\w/g)!.map((x) => parseInt(x, 16));
-  const [r1, g1, b1] = parse(c1);
-  const [r2, g2, b2] = parse(c2);
-
-  const r = Math.round(lerp(r1, r2, t));
-  const g = Math.round(lerp(g1, g2, t));
-  const b = Math.round(lerp(b1, b2, t));
-
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
-// color scale manually defined
-const COLORS = [
-  { t: -3,   color: "#08306B" }, // bleu très foncé
-  { t: -1.5, color: "#4292C6" }, // bleu clair
-  { t:  0,   color: "#FDFDFD" }, // quasi blanc
-  { t:  1.5, color: "#FDB863" }, // jaune-orangé
-  { t:  3,   color: "#E66101" }, // orange
-  { t:  4,   color: "#B2182B" }, // rouge foncé
-];
-
-
-function getColorForValue(value: number | null) {
-  if (value === null) return "rgba(0,0,0,0)"; // transparent for NA
-
-  // clamp between -3 and 4
-  const v = Math.max(-3, Math.min(4, value));
-
-  // find interval
-  for (let i = 0; i < COLORS.length - 1; i++) {
-    const a = COLORS[i];
-    const b = COLORS[i + 1];
-
-    if (v >= a.t && v <= b.t) {
-      const t = (v - a.t) / (b.t - a.t);
-      return lerpColor(a.color, b.color, t);
-    }
-  }
-
-  return COLORS[COLORS.length - 1].color;
-}
-
+/* ---------------------------------------------------------
+   🟢 HOOK PRINCIPAL
+   --------------------------------------------------------- */
 export function useData() {
-  const tempData = useAppSelector((state) => state.data.tempData);
+  const tempData = useAppSelector((s) => s.data.tempData);
 
   function getArea(lat: number, lon: number): TempAnomalyArea | undefined {
-    return tempData.tempanomalies.find((a) => a.lat === lat && a.lon === lon);
+    return tempData.tempanomalies.find(
+      (a) => a.lat === lat && a.lon === lon
+    );
   }
 
-  function getValue(area: TempAnomalyArea, year: number) {
+  /** 🔹 Retourne la valeur EXACTE si elle existe */
+  function getValue(area: TempAnomalyArea, year: number): number | null {
     const entry = area.data.find((d) => d.year === year);
-    if (!entry) return null;
-    if (entry.value === "NA") return null;
+    if (!entry || entry.value === "NA") return null;
     return entry.value;
   }
 
-  function getColor(area: TempAnomalyArea, year: number) {
-    const v = getValue(area, year);
-    return getColorForValue(v);
+  /** 🔥 Retourne la valeur INTERPOLÉE + LISSÉE (Méthode B) */
+  function getInterpolatedValue(area: TempAnomalyArea, year: number): number | null {
+    return interpolateSmooth(area.data, year);
   }
 
   return {
     tempData,
     getArea,
-    getValue,
-    getColor,
+    getValue,             // valeur brute
+    getInterpolatedValue, // valeur interpolée smooth
   };
 }
+
+export { interpolateSmooth };

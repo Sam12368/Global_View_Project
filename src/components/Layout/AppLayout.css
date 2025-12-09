@@ -33,4 +33,41 @@
 	padding-left: 100px;
 }
 
+/* 📱 RESPONSIVE DESIGN */
+
+/* Tablette (< 1024px) */
+@media (max-width: 1024px) {
+	.app-layout {
+		grid-template-columns: 180px 1fr;
+	}
+	
+	.app-header {
+		padding-left: 60px;
+		height: 55px;
+	}
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+	.app-layout {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr;
+	}
+	
+	.app-header {
+		padding-left: 20px;
+		height: 50px;
+		font-size: 0.9rem;
+	}
+}
+
+/* Petit mobile (< 480px) */
+@media (max-width: 480px) {
+	.app-header {
+		padding-left: 10px;
+		height: 45px;
+		font-size: 0.85rem;
+	}
+}
+
 

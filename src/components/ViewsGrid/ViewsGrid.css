@@ -1,21 +1,68 @@
 .viewsgrid-root {
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1rem;
   min-height: 80px;
-  
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
 }
 
 .viewsgrid-card {
-  flex: 1;
   background-color: #ffffff;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  padding: 0.5rem 0.75rem;
+  padding: 0.8rem 1rem;
   font-size: 0.85rem;
+  min-height: 400px;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .viewsgrid-placeholder {
   font-size: 0.9rem;
   color: #6b7280;
  
+}
+
+/* 📱 RESPONSIVE VIEWSGRID */
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .viewsgrid-root {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 0.8rem;
+    max-height: calc(100vh - 250px);
+  }
+  
+  .viewsgrid-card {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    min-height: 350px;
+  }
+}
+
+/* Mobile - Stack vertical */
+@media (max-width: 768px) {
+  .viewsgrid-root {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    min-height: auto;
+    max-height: none;
+  }
+  
+  .viewsgrid-card {
+    width: 100%;
+    min-height: 320px;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .viewsgrid-card {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+  }
 }

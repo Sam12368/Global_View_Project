@@ -1,4 +1,5 @@
-import logo from "../../assets/24390.svg.svg";
+// @ts-ignore: allow importing svg without type declarations
+import logo from "../../assets/24390.svg";
 
 export default function Header() {
   return (

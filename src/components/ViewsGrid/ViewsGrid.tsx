@@ -1,15 +1,21 @@
+// src/components/ViewsGrid/ViewsGrid.tsx
 import "./ViewsGrid.css";
 import { useViews } from "../../hooks/useViews";
+import GraphView from "./GraphView";
+import HistogramView from "./HistogramView";
+import HeatmapView from "./HeatmapView";
 
 const ViewsGrid: React.FC = () => {
-  const { graphViewVisible, histogramViewVisible, heatmapViewVisible } = useViews();
+  const { graphViewVisible, histogramViewVisible, heatmapViewVisible } =
+    useViews();
+
   const any = graphViewVisible || histogramViewVisible || heatmapViewVisible;
 
   if (!any) {
     return (
       <div className="viewsgrid-root">
         <p className="viewsgrid-placeholder">
-          Aucune vue sélectionnée pour l’instant.
+          No view selected yet. Use the right panel to toggle Graph / Histogram / Heatmap.
         </p>
       </div>
     );
@@ -19,20 +25,19 @@ const ViewsGrid: React.FC = () => {
     <div className="viewsgrid-root">
       {graphViewVisible && (
         <div className="viewsgrid-card">
-          <h3>Graph View</h3>
-          <p>(à implémenter)</p>
+          <GraphView />
         </div>
       )}
+
       {histogramViewVisible && (
         <div className="viewsgrid-card">
-          <h3>Histogram View</h3>
-          <p>(à implémenter)</p>
+          <HistogramView />
         </div>
       )}
+
       {heatmapViewVisible && (
         <div className="viewsgrid-card">
-          <h3>Heatmap View</h3>
-          <p>(à implémenter)</p>
+          <HeatmapView />
         </div>
       )}
     </div>

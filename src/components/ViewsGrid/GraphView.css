@@ -1,0 +1,276 @@
+/* ============================================
+   📈 GRAPH VIEW — NASA STYLE UI
+   ============================================ */
+
+.graphview-container {
+  background: #0b0f19;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  color: #e2e8f0;
+  box-shadow: 0 0 18px rgba(0,0,0,0.35);
+}
+
+/* ---------- Title ---------- */
+.graphview-container h2 {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: #7aa2ff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ---------- MODE BUTTONS ---------- */
+.graph-mode-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.graph-mode-buttons .mode-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #9ca3af;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.graph-mode-buttons .mode-btn:hover:not(:disabled) {
+  border-color: #7aa2ff;
+  background: rgba(122,162,255,0.15);
+  color: #7aa2ff;
+}
+
+.graph-mode-buttons .mode-btn.active {
+  background: #7aa2ff;
+  color: #0b0f19;
+  border-color: #7aa2ff;
+  box-shadow: 0 0 12px rgba(122,162,255,0.4);
+}
+
+.graph-mode-buttons .mode-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* 📱 RESPONSIVE GRAPHVIEW */
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .graphview-container {
+    padding: 1rem;
+  }
+  
+  .graphview-container h2 {
+    font-size: 0.9rem;
+  }
+  
+  .graph-mode-buttons .mode-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .graphview-container {
+    padding: 0.8rem;
+  }
+  
+  .graphview-container h2 {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .graph-mode-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .graph-mode-buttons .mode-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .graphview-container {
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+  
+  .graphview-container h2 {
+    font-size: 0.8rem;
+  }
+  
+  .graph-mode-buttons .mode-btn {
+    padding: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+/* ---------- SECTIONS ---------- */
+.graphview-section {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.8rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.graphview-section h4 {
+  margin: 0;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ---------- AREA SELECTOR (radio buttons) ---------- */
+.area-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.area-selector label,
+.area-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  padding: 0.2rem 0;
+}
+
+.area-selector input[type="radio"] {
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.area-selector label:hover {
+  color: #e2e8f0;
+}
+
+/* ---------- GROUP SELECTOR (checkboxes) ---------- */
+.group-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* ---------- GROUP SELECTOR ---------- */
+.graphview-group-selector {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 0.8rem;
+  border-radius: 12px;
+  margin-bottom: 1.4rem;
+}
+
+.graphview-group-selector h4 {
+  margin: 0;
+  margin-bottom: 0.6rem;
+  font-size: 0.8rem;
+  color: #60a5fa;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 4px 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.group-checkbox input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.group-checkbox:hover {
+  color: #e2e8f0;
+}
+
+/* ---------- Chart container ---------- */
+.graphview-chart {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.25);
+}
+
+.graphview-chart canvas {
+  width: 100% !important;
+  height: 340px !important;
+}
+
+/* ---------- Chart SVG wrapper ---------- */
+.graphview-chart-wrapper {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.graph-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.graph-info {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.graph-info small {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* ---------- Placeholder ---------- */
+.graphview-placeholder {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.graphview-placeholder p {
+  margin: 0;
+  line-height: 1.6;
+}
