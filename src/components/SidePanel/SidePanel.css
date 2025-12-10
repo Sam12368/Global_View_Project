@@ -1,0 +1,120 @@
+.sidebar {
+	
+    background: #fff;
+    border-radius: 16px 16px 16px 16px;
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 16px;
+    max-width: 220px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: #222;
+
+}
+
+/* 📱 RESPONSIVE SIDEBAR */
+
+/* Tablette */
+@media (max-width: 1024px) {
+	.sidebar {
+		max-width: 180px;
+		padding: 12px;
+		gap: 16px;
+	}
+	
+	.sidebar-T {
+		font-size: 1rem;
+	}
+	
+	.sidebar-title {
+		font-size: 0.95rem;
+	}
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+	.sidebar {
+		max-width: 100%;
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+		padding: 12px 16px;
+		gap: 12px;
+	}
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+	.sidebar {
+		padding: 8px 12px;
+		gap: 8px;
+	}
+	
+	.sidebar-T {
+		font-size: 0.9rem;
+		margin-bottom: 8px;
+	}
+	
+	.sidebar-block {
+		padding: 8px;
+	}
+}
+.sidebar-T {
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin-bottom: 12px;
+}
+.sidebar-block {
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #e0e0e0;
+	padding: 12px 10px;
+	margin-bottom: 8px;
+	color: #222;
+}
+.sidebar-title {
+	font-size: 1.1rem;
+	font-weight: bold;
+
+}
+.sidebar-subtitle {
+	font-size: 1rem;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+.toggle-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+.toggle-label {
+	font-size: 1rem;
+}
+.fake-toggle {
+	width: 32px;
+	height: 18px;
+	background: #eee;
+	border-radius: 9px;
+	border: 1px solid #bbb;
+}
+.small-plus-btn {
+	font-size: 1.1rem;
+	padding: 2px 8px;
+	border-radius: 6px;
+	border: 1px solid #bbb;
+	background: #f8f8f8;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+.small-plus-btn:hover {
+	background: #e0e0e0;
+}
+.checkbox-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 6px;
+}

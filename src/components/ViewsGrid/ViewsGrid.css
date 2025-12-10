@@ -1,0 +1,97 @@
+.viewsgrid-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: auto;
+  overflow-y: auto;
+}
+
+.viewsgrid-container {
+  display: flex;
+  gap: 1rem;
+  height: auto;
+}
+
+/* Layout modes */
+.viewsgrid-column {
+  flex-direction: column;
+}
+
+.viewsgrid-row {
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+.viewsgrid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1rem;
+}
+
+.viewsgrid-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 0.8rem 1rem;
+  font-size: 0.85rem;
+  min-height: 500px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Row layout - cards take equal width */
+.viewsgrid-row .viewsgrid-card {
+  min-width: 400px;
+  flex: 1;
+}
+
+/* Grid layout - cards adapt */
+.viewsgrid-grid .viewsgrid-card {
+  min-height: 400px;
+}
+
+.viewsgrid-placeholder {
+  font-size: 0.9rem;
+  color: #6b7280;
+ 
+}
+
+/* 📱 RESPONSIVE VIEWSGRID */
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .viewsgrid-root {
+    gap: 0.8rem;
+    max-height: calc(100vh - 250px);
+  }
+  
+  .viewsgrid-card {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    min-height: 350px;
+  }
+}
+
+/* Mobile - Stack vertical */
+@media (max-width: 768px) {
+  .viewsgrid-root {
+    gap: 0.8rem;
+    min-height: auto;
+    max-height: none;
+  }
+  
+  .viewsgrid-card {
+    width: 100%;
+    min-height: 320px;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+  .viewsgrid-card {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+  }
+}

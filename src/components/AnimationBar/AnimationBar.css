@@ -1,0 +1,226 @@
+.animation-bar-controls-center label {
+	font-weight: bold;
+	font-size: 1.1rem;
+}
+.animation-bar-controls-row {
+	position: relative;
+}
+.animation-bar-controls-left {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+.animation-bar-controls-center {
+	justify-content: center;
+	width: 100%;
+}
+.animation-bar-slider-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 8px;
+	margin-bottom: 12px;
+	padding: 16px 0;
+	
+}
+.animation-bar-controls-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	gap: 0;
+}
+.animation-bar-controls-left {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.animation-bar-speed {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: 16px;
+}
+.animation-bar-controls-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+}
+
+/* 📱 RESPONSIVE ANIMATION BAR */
+
+/* Tablette */
+@media (max-width: 1024px) {
+	.animation-bar-controls-center label {
+		font-size: 1rem;
+	}
+	
+	.animation-bar-slider-row {
+		padding: 12px 0;
+	}
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+	.animation-bar-controls-center label {
+		font-size: 0.9rem;
+	}
+	
+	.animation-bar-slider-row {
+		flex-direction: column;
+		gap: 10px;
+		padding: 10px 0;
+	}
+	
+	.animation-bar-controls-row {
+		flex-direction: column;
+		gap: 10px;
+	}
+	
+	.animation-bar-controls-left {
+		position: static;
+		width: 100%;
+		justify-content: center;
+	}
+	
+	.animation-bar-speed {
+		margin-left: 0;
+	}
+}
+
+/* Petit mobile */
+@media (max-width: 480px) {
+	.animation-bar-controls-center label {
+		font-size: 0.85rem;
+	}
+	
+	.animation-bar-controls-left {
+		flex-direction: column;
+		gap: 8px;
+	}
+	
+	.animation-bar-speed {
+		flex-direction: column;
+		gap: 4px;
+		font-size: 0.85rem;
+	}
+}
+
+.animation-shell {
+	width: 100%;
+	max-width: none;
+	margin:  0;
+	padding: 16px 16px 16px 16px;
+	border-radius:  16px 16px 16px 16px;
+	border: 2px solid #e0e0e0;
+	background: #fff;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	display: flex;
+	flex-direction: column;
+	color: #222;
+	gap: 0;
+}
+
+.animation-bar-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 16px;
+}
+.animation-bar-controls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.animation-bar-slider {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.anim-slider-input {
+	width: 100%;
+	height: 12px;
+	background: #000;
+	border-radius: 6px;
+	accent-color: #000;
+}
+.anim-year-label {
+	font-size: 0.95rem;
+	color: #222;
+	min-width: 40px;
+	text-align: center;
+}
+.animation-bar-speed {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 90px;
+}
+.animation-bar-year-input {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin-top: 8px;
+	gap: 8px;
+}
+
+.animation-header {
+	font-size: 1.2rem;
+	font-weight: 600;
+	margin-bottom: 12px;
+}
+
+.animation-controls-row {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.anim-btn {
+	font-size: 1.3rem;
+	padding: 6px 12px;
+	border-radius: 8px;
+	border: 1px solid #bbb;
+	background: #f8f8f8;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+.anim-btn:hover {
+	background: #e0e0e0;
+}
+
+.anim-slider {
+	flex: 1;
+	margin: 0 12px;
+}
+.anim-slider input[type="range"] {
+	width: 100%;
+	height: 8px;
+	background: #eee;
+	border-radius: 4px;
+	accent-color: #222;
+}
+
+.animation-bottom-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin-top: 8px;
+}
+.year-select {
+	font-size: 1rem;
+	padding: 4px 12px;
+	border-radius: 6px;
+	border: 1px solid #bbb;
+	background: #f8f8f8;
+}
+.speed-box {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
