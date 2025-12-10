@@ -213,14 +213,12 @@ export default function WorldMap() {
 
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-    // ----- Lignes de latitudes (toujours visibles si sélectionnées) -----
-    if (selectedLatitudes.length > 0) {
+    // ----- Lignes de latitudes (visibles SEULEMENT en mode latitudes) -----
+    if (mode === "latitudes" && selectedLatitudes.length > 0) {
       ctx.save();
       ctx.setLineDash([6, 4]);
-      ctx.strokeStyle = mode === "latitudes" 
-        ? "rgba(239,68,68,0.9)"  // rouge vif en mode latitudes
-        : "rgba(239,68,68,0.5)";  // rouge semi-transparent en mode areas
-      ctx.lineWidth = mode === "latitudes" ? 2 : 1.5;
+      ctx.strokeStyle = "rgba(239,68,68,0.9)";  // rouge vif
+      ctx.lineWidth = 2;
 
       selectedLatitudes.forEach((lat) => {
         const y = ((90 - lat) / 180) * HEIGHT;
@@ -231,20 +229,20 @@ export default function WorldMap() {
       });
       ctx.restore();
 
-      // petites annotations de latitude tous les 30°
-      ctx.fillStyle = "white";
-      ctx.font = "12px system-ui, sans-serif";
-      for (let lat = -60; lat <= 60; lat += 30) {
+      // Annotations de latitude pour toutes les latitudes tracées
+      ctx.fillStyle = "rgba(239,68,68,0.95)";
+      ctx.font = "bold 11px system-ui, sans-serif";
+      selectedLatitudes.forEach((lat) => {
         const y = ((90 - lat) / 180) * HEIGHT;
         ctx.fillText(`${lat}°`, 8, y - 4);
-      }
+      });
     }
 
-    // ----- ZONES rectangulaires (toujours visibles si créées) ----- 
+    // ----- ZONES rectangulaires (visibles SEULEMENT en mode areas) ----- 
     const cellW = (4 / 360) * WIDTH;
     const cellH = (4 / 180) * HEIGHT;
 
-    if (areas.length > 0) {
+    if (mode === "areas" && areas.length > 0) {
       areas.forEach((area) => {
         const cells = area.cellIds
           .map((id) => tempData.tempanomalies[id])
@@ -274,14 +272,10 @@ export default function WorldMap() {
         ctx.lineWidth = isHover ? 3 : 2;
         ctx.strokeStyle = isHover
           ? "rgba(251,191,36,0.95)" // jaune doré NASA style
-          : mode === "areas"
-            ? "rgba(56,189,248,0.95)"  // bleu vif en mode areas
-            : "rgba(56,189,248,0.5)";   // bleu semi-transparent en mode latitudes
+          : "rgba(56,189,248,0.95)";  // bleu vif
         ctx.fillStyle = isHover
           ? "rgba(251,191,36,0.25)"
-          : mode === "areas"
-            ? "rgba(255, 26, 1, 0.18)"
-            : "rgba(255, 26, 1, 0.1)";  // remplissage plus léger en mode latitudes
+          : "rgba(255, 26, 1, 0.18)";
         ctx.beginPath();
         ctx.rect(minX, minY, w, h);
         ctx.fill();
@@ -315,28 +309,29 @@ export default function WorldMap() {
       ctx.restore();
     }
 
-    // 🟡 Cellules highlightées (depuis histogram)
+    // 🟡 Ligne de latitude en pointillé jaune (depuis heatmap)
     if (highlightedCellIds.length > 0) {
+      // Extraire les latitudes uniques depuis highlightedCellIds
+      const highlightedLatitudes = new Set<number>();
       highlightedCellIds.forEach((cellId) => {
         const cell = tempData.tempanomalies[cellId];
-        if (!cell) return;
-
-        const gx = Math.floor((cell.lon + 180) / 4);
-        const gy = Math.floor((90 - cell.lat) / 4);
-        const x = gx * cellW;
-        const y = gy * cellH;
-
-        ctx.save();
-        ctx.strokeStyle = "rgba(251,191,36,1)"; // jaune vif
-        ctx.lineWidth = 3;
-        ctx.setLineDash([0]);
-        ctx.strokeRect(x, y, cellW, cellH);
-        
-        // Remplissage semi-transparent
-        ctx.fillStyle = "rgba(251,191,36,0.3)";
-        ctx.fillRect(x, y, cellW, cellH);
-        ctx.restore();
+        if (cell) highlightedLatitudes.add(cell.lat);
       });
+
+      // Dessiner uniquement les lignes de latitude en jaune pointillé
+      ctx.save();
+      ctx.setLineDash([8, 6]);
+      ctx.strokeStyle = "rgba(251,191,36,0.95)";
+      ctx.lineWidth = 2.5;
+
+      highlightedLatitudes.forEach((lat) => {
+        const y = ((90 - lat) / 180) * HEIGHT;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(WIDTH, y);
+        ctx.stroke();
+      });
+      ctx.restore();
     }
   }, [mode, selectedLatitudes, areas, dragStart, dragCurrent, hoverAreaId, tempData, highlightedCellIds]);
 
@@ -420,8 +415,6 @@ export default function WorldMap() {
 
   // MouseMove : soit on dessine, soit on survole
   function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (mode !== "areas") return;
-
     const posCanvas = getMousePos(e);
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -429,40 +422,55 @@ export default function WorldMap() {
     const xClient = e.clientX - rect.left;
     const yClient = e.clientY - rect.top;
 
-    // Si on est en train de drag → on met à jour le rectangle
-    if (dragStart) {
-      setDragCurrent(posCanvas);
+    // MODE AREAS
+    if (mode === "areas") {
+      // Si on est en train de drag → on met à jour le rectangle
+      if (dragStart) {
+        setDragCurrent(posCanvas);
+        setHoverAreaId(null);
+        setHoverTooltip(null);
+        return;
+      }
+
+      // Sinon, on est en hover → on teste les zones
+      const hit = hitTestArea(posCanvas.x, posCanvas.y);
+      if (!hit) {
+        setHoverAreaId(null);
+        setHoverTooltip(null);
+        return;
+      }
+
+      const metrics = computeAreaMetrics(hit.id);
+      if (!metrics) {
+        setHoverAreaId(null);
+        setHoverTooltip(null);
+        return;
+      }
+
+      setHoverAreaId(hit.id);
+      setHoverTooltip({
+        x: xClient,
+        y: yClient,
+        label: metrics.area.name,
+        latMin: metrics.latMin,
+        latMax: metrics.latMax,
+        lonMin: metrics.lonMin,
+        lonMax: metrics.lonMax,
+        anomaly: metrics.anomaly,
+      });
+      return;
+    }
+
+    // MODE LATITUDES - pas de tooltip
+    if (mode === "latitudes") {
       setHoverAreaId(null);
       setHoverTooltip(null);
       return;
     }
 
-    // Sinon, on est en hover → on teste les zones
-    const hit = hitTestArea(posCanvas.x, posCanvas.y);
-    if (!hit) {
-      setHoverAreaId(null);
-      setHoverTooltip(null);
-      return;
-    }
-
-    const metrics = computeAreaMetrics(hit.id);
-    if (!metrics) {
-      setHoverAreaId(null);
-      setHoverTooltip(null);
-      return;
-    }
-
-    setHoverAreaId(hit.id);
-    setHoverTooltip({
-      x: xClient,
-      y: yClient,
-      label: metrics.area.name,
-      latMin: metrics.latMin,
-      latMax: metrics.latMax,
-      lonMin: metrics.lonMin,
-      lonMax: metrics.lonMax,
-      anomaly: metrics.anomaly,
-    });
+    // Autres modes
+    setHoverAreaId(null);
+    setHoverTooltip(null);
   }
 
   // hit-test d'une zone à partir d'une position canvas

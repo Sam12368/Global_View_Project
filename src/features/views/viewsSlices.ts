@@ -52,6 +52,16 @@ export const viewsSlice = createSlice({
             state.layout = state.layout.filter(v => v !== view);
 
 
+        },
+        AllViews: (state, action: PayloadAction<ViewType>) => {
+            const view = action.payload;
+            if (view === Views.GRAPH) {
+                 state.graphVisible = true;
+                 state.histogramVisible = true;
+                 state.heatmapVisible = true;
+                }
+           
+            state.layout = [Views.GRAPH, Views.HISTOGRAM, Views.HEATMAP];
         }, 
         setLayoutOrder: (state, action: PayloadAction<ViewType[]>) => {
             state.layout = action.payload;
@@ -61,7 +71,7 @@ export const viewsSlice = createSlice({
 
 
     },}); 
-export const { showView, hideView, setLayoutOrder } = viewsSlice.actions;
+export const { showView, hideView,AllViews, setLayoutOrder } = viewsSlice.actions;
 export default viewsSlice.reducer;
     
     

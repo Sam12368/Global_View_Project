@@ -47,7 +47,10 @@
             <button className="anim-btn" type="button" onClick={() => (playing ? pause() : play())}>
               {playing ? "⏸" : "▶"}
             </button>
-            <button className="anim-btn" type="button" onClick={() => setYear(min)}>
+            <button className="anim-btn" type="button" onClick={() => {
+              setYear(min);
+              play();
+            }}>
               ⟲
             </button>
             <span className="animation-bar-speed">
@@ -65,8 +68,13 @@
               min={min}
               max={max}
               value={inputYear}
-              onChange={e => setInputYear(Number(e.target.value))}
-              onBlur={() => setYear(Number(inputYear))}
+              onChange={e => {
+                const year = Number(e.target.value);
+                setInputYear(year);
+                if (year >= min && year <= max) {
+                  setYear(year);
+                }
+              }}
               style={{ width: 80, fontSize: "1rem", borderRadius: 6, border: "1px solid #bbb", padding: "4px 8px" }}
             />
           </div>

@@ -49,7 +49,7 @@
   font-weight: 300;
 }
 
-/* ---------- Wrapper avec scroll ---------- */
+/* ---------- Wrapper ---------- */
 .heatmap-wrapper {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(122, 162, 255, 0.12);
@@ -58,31 +58,9 @@
   box-shadow: 
     inset 0 2px 8px rgba(0, 0, 0, 0.5),
     inset 0 0 0 1px rgba(255,255,255,0.02);
-  overflow: auto;
-  max-height: 550px;
+  overflow: hidden;
   flex: 1;
   position: relative;
-}
-
-/* Custom Scrollbar */
-.heatmap-wrapper::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-.heatmap-wrapper::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-}
-
-.heatmap-wrapper::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #7aa2ff 0%, #5a8adf 100%);
-  border-radius: 6px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-}
-
-.heatmap-wrapper::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #8ab2ff 0%, #6a9aef 100%);
 }
 
 .heatmap-wrapper svg {

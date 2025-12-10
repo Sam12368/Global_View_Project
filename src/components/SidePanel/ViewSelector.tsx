@@ -4,9 +4,34 @@ import "./ViewSelector.css";
 const ViewSelector: React.FC = () => {
 	const { graphViewVisible, histogramViewVisible, heatmapViewVisible, showView, hideView, Views } = useViews();
 
+	// Vérifier si toutes les vues sont activées
+	const allVisible = graphViewVisible && histogramViewVisible && heatmapViewVisible;
+
+	const handleAllToggle = (checked: boolean) => {
+		if (checked) {
+			// Activer toutes les vues
+			showView(Views.GRAPH);
+			showView(Views.HISTOGRAM);
+			showView(Views.HEATMAP);
+		} else {
+			// Désactiver toutes les vues
+			hideView(Views.GRAPH);
+			hideView(Views.HISTOGRAM);
+			hideView(Views.HEATMAP);
+		}
+	};
+
 	return (
 		<div className="sidebar-block">
 			<div className="sidebar-title">Add View</div>
+			<div className="checkbox-row">
+				<input 
+					type="checkbox" 
+					checked={allVisible} 
+					onChange={e => handleAllToggle(e.target.checked)} 
+				/>
+				<span>All</span>
+			</div>
 			<div className="checkbox-row">
 				<input type="checkbox" checked={graphViewVisible} onChange={e => e.target.checked ? showView(Views.GRAPH) : hideView(Views.GRAPH)} />
 				<span>Graph</span>

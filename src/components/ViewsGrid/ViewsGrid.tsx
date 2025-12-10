@@ -15,7 +15,7 @@ const ViewsGrid: React.FC = () => {
     return (
       <div className="viewsgrid-root">
         <p className="viewsgrid-placeholder">
-          No view selected yet. Use the right panel to toggle Graph / Histogram / Heatmap.
+          No view selected yet. Use the right panel to toggle Graph / Histogram.
         </p>
       </div>
     );

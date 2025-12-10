@@ -3,15 +3,27 @@ import "./HeatmapView.css";
 import { useData } from "../../hooks/useData";
 import { useYear } from "../../hooks/useYear";
 import { useSelections } from "../../hooks/useSelection";
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect } from "react";
 
 export default function HeatmapView() {
   const { tempData, getInterpolatedValue } = useData();
-  const { currentYear, setYear } = useYear();
-  const { addLatitude, removeLatitude, selectedLatitudes } = useSelections();
-  const [hoveredCell, setHoveredCell] = useState<{ lat: number; year: number; value: number | null; x: number; y: number } | null>(null);
+  const { setYear } = useYear();
+  const { setHighlightedCells, highlightedCellIds } = useSelections();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // Stocker la cellule sélectionnée (latitude + année)
+  const selectedCell = useRef<{ lat: number; year: number } | null>(null);
+  
+  // Extraire les latitudes depuis highlightedCellIds
+  const selectedLatitudes = useMemo(() => {
+    const lats = new Set<number>();
+    highlightedCellIds.forEach(cellId => {
+      const cell = tempData.tempanomalies[cellId];
+      if (cell) lats.add(cell.lat);
+    });
+    return Array.from(lats);
+  }, [highlightedCellIds, tempData]);
 
   // ============================================================
   // 🔹 FONCTION POUR OBTENIR LA COULEUR
@@ -37,31 +49,37 @@ export default function HeatmapView() {
   // ============================================================
   const heatmapData = useMemo(() => {
     try {
-      // Utiliser uniquement les latitudes sélectionnées ou une liste réduite
-      const latitudes = selectedLatitudes.length > 0
-        ? selectedLatitudes.sort((a, b) => b - a)
-        : Array.from(new Set(tempData.tempanomalies.map((a) => a.lat)))
-            .sort((a, b) => b - a)
-            .filter((_, i) => i % 5 === 0);
+      // Latitudes réduites (tous les 4° pour meilleures performances)
+      const latitudes = Array.from(new Set(tempData.tempanomalies.map((a) => a.lat)))
+        .sort((a, b) => b - a)
+        .filter(lat => lat >= -88 && lat <= 88 && lat % 4 === 0);
 
-      // Années réduites (tous les 5 ans)
-      const years = Array.from({ length: 30 }, (_, i) => 1880 + i * 5);
+      // Années réduites (tous les 10 ans pour encore meilleures performances)
+      const years = Array.from({ length: 15 }, (_, i) => 1880 + i * 10);
 
       // Créer une map pour accès rapide
       const dataMap = new Map<string, number>();
       
+      // Pré-grouper les cellules par latitude pour optimisation
+      const cellsByLat = new Map<number, typeof tempData.tempanomalies>();
+      tempData.tempanomalies.forEach((cell) => {
+        if (!cellsByLat.has(cell.lat)) {
+          cellsByLat.set(cell.lat, []);
+        }
+        cellsByLat.get(cell.lat)!.push(cell);
+      });
+
       latitudes.forEach((lat) => {
+        const cellsForLat = cellsByLat.get(lat) || [];
         years.forEach((year) => {
           let sum = 0;
           let count = 0;
 
-          tempData.tempanomalies.forEach((cell) => {
-            if (cell.lat === lat) {
-              const value = getInterpolatedValue(cell, year);
-              if (value !== null) {
-                sum += value;
-                count++;
-              }
+          cellsForLat.forEach((cell) => {
+            const value = getInterpolatedValue(cell, year);
+            if (value !== null) {
+              sum += value;
+              count++;
             }
           });
 
@@ -91,13 +109,25 @@ export default function HeatmapView() {
     const { latitudes, years, dataMap } = heatmapData;
     if (latitudes.length === 0 || years.length === 0) return;
 
-    const cellWidth = 18;
-    const cellHeight = 14;
-    const leftMargin = 60;
-    const topMargin = 35;
+    // Marges
+    const leftMargin = 70;
+    const topMargin = 50;
+    const rightMargin = 20;
+    const bottomMargin = 20;
 
-    canvas.width = years.length * cellWidth + leftMargin + 20;
-    canvas.height = latitudes.length * cellHeight + topMargin + 20;
+    // Calculer les dimensions du canvas en fonction de l'espace disponible
+    const parentWidth = canvas.parentElement?.clientWidth || 800;
+    const parentHeight = canvas.parentElement?.clientHeight || 500;
+    
+    canvas.width = Math.max(parentWidth, 800);
+    canvas.height = Math.max(parentHeight, 450);
+
+    // Calculer la taille des cellules pour remplir l'espace
+    const availableWidth = canvas.width - leftMargin - rightMargin;
+    const availableHeight = canvas.height - topMargin - bottomMargin;
+    
+    const cellWidth = Math.floor(availableWidth / years.length);
+    const cellHeight = Math.floor(availableHeight / latitudes.length);
 
     // Fond simple
     ctx.fillStyle = "#0b0f19";
@@ -119,27 +149,56 @@ export default function HeatmapView() {
       });
     });
 
-    // Labels années
+    // Labels années (toutes visibles, rotation pour meilleure lisibilité)
     ctx.fillStyle = "#7aa2ff";
-    ctx.font = "11px sans-serif";
+    ctx.font = "bold 11px sans-serif";
     ctx.textAlign = "center";
+    ctx.textBaseline = "top";
     years.forEach((year, i) => {
-      ctx.fillText(
-        year.toString(),
-        leftMargin + i * cellWidth + cellWidth / 2,
-        topMargin - 8
-      );
+      ctx.save();
+      const x = leftMargin + i * cellWidth + cellWidth / 2;
+      const y = topMargin - 12;
+      ctx.translate(x, y);
+      ctx.rotate(-Math.PI / 6); // Rotation -30°
+      ctx.fillText(year.toString(), 0, 0);
+      ctx.restore();
     });
 
-    // Labels latitudes
+    // Labels latitudes (tous les 8°)
+    ctx.fillStyle = "#7aa2ff";
+    ctx.font = "bold 10px sans-serif";
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
     latitudes.forEach((lat, i) => {
-      ctx.fillText(
-        `${lat}°`,
-        leftMargin - 10,
-        topMargin + i * cellHeight + cellHeight / 2
-      );
+      if (lat % 8 === 0 || lat === -88 || lat === 88) {
+        ctx.fillText(
+          `${lat}°`,
+          leftMargin - 10,
+          topMargin + i * cellHeight + cellHeight / 2
+        );
+      }
+    });
+
+    // Grille de séparation verticale (tous les 10 ans)
+    ctx.strokeStyle = "rgba(251, 191, 36, 0.2)";
+    ctx.lineWidth = 1;
+    years.forEach((year, i) => {
+      if (year % 10 === 0) {
+        ctx.beginPath();
+        ctx.moveTo(leftMargin + i * cellWidth, topMargin);
+        ctx.lineTo(leftMargin + i * cellWidth, topMargin + latitudes.length * cellHeight);
+        ctx.stroke();
+      }
+    });
+
+    // Grille de séparation horizontale (tous les 16°)
+    latitudes.forEach((lat, i) => {
+      if (lat % 16 === 0) {
+        ctx.beginPath();
+        ctx.moveTo(leftMargin, topMargin + i * cellHeight);
+        ctx.lineTo(leftMargin + years.length * cellWidth, topMargin + i * cellHeight);
+        ctx.stroke();
+      }
     });
   }, [heatmapData, getColor]);
 
@@ -155,40 +214,44 @@ export default function HeatmapView() {
     const { latitudes, years } = heatmapData;
     if (latitudes.length === 0 || years.length === 0) return;
 
-    const cellWidth = 18;
-    const cellHeight = 14;
-    const leftMargin = 60;
-    const topMargin = 35;
+    // Utiliser les mêmes dimensions que le canvas principal
+    const mainCanvas = canvasRef.current;
+    if (!mainCanvas) return;
+    
+    const leftMargin = 70;
+    const topMargin = 50;
+    const rightMargin = 20;
+    const bottomMargin = 20;
 
-    canvas.width = years.length * cellWidth + leftMargin + 20;
-    canvas.height = latitudes.length * cellHeight + topMargin + 20;
+    canvas.width = mainCanvas.width;
+    canvas.height = mainCanvas.height;
+    
+    const availableWidth = canvas.width - leftMargin - rightMargin;
+    const availableHeight = canvas.height - topMargin - bottomMargin;
+    
+    const cellWidth = Math.floor(availableWidth / years.length);
+    const cellHeight = Math.floor(availableHeight / latitudes.length);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Bordures simples
-    latitudes.forEach((lat, latIdx) => {
-      years.forEach((year, yearIdx) => {
-        const isSelected = selectedLatitudes.includes(lat);
-        const isCurrentYear = year === currentYear;
-        const isHovered = hoveredCell?.lat === lat && hoveredCell?.year === year;
+    // Bordure jaune uniquement pour la cellule sélectionnée
+    if (selectedCell.current) {
+      const { lat, year } = selectedCell.current;
+      const latIdx = latitudes.findIndex(l => l === lat);
+      const yearIdx = years.findIndex(y => y === year);
 
-        if (isSelected || isCurrentYear || isHovered) {
-          const x = leftMargin + yearIdx * cellWidth;
-          const y = topMargin + latIdx * cellHeight;
+      if (latIdx !== -1 && yearIdx !== -1) {
+        const x = leftMargin + yearIdx * cellWidth;
+        const y = topMargin + latIdx * cellHeight;
 
-          if (isSelected || isCurrentYear) {
-            ctx.strokeStyle = "#fbbf24";
-            ctx.lineWidth = 2;
-          } else if (isHovered) {
-            ctx.strokeStyle = "#7aa2ff";
-            ctx.lineWidth = 2;
-          }
-          
-          ctx.strokeRect(x, y, cellWidth - 1, cellHeight - 1);
-        }
-      });
-    });
-  }, [heatmapData, selectedLatitudes, currentYear, hoveredCell]);
+        ctx.strokeStyle = "#fbbf24";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, cellWidth - 1, cellHeight - 1);
+      }
+    }
+    // Forcer le re-render en cas de changement
+    canvas.style.opacity = '0.99999';
+  }, [heatmapData, highlightedCellIds]);
 
   // ============================================================
   // 🔹 GÉRER LE CLIC SUR UNE CELLULE
@@ -201,15 +264,22 @@ export default function HeatmapView() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const cellWidth = 28;
-    const cellHeight = 22;
+    const { latitudes, years } = heatmapData;
+    
     const leftMargin = 70;
-    const topMargin = 40;
+    const topMargin = 50;
+    const rightMargin = 20;
+    const bottomMargin = 20;
+    
+    const availableWidth = canvas.width - leftMargin - rightMargin;
+    const availableHeight = canvas.height - topMargin - bottomMargin;
+    
+    const cellWidth = Math.floor(availableWidth / years.length);
+    const cellHeight = Math.floor(availableHeight / latitudes.length);
 
     // Vérifier si le clic est dans la zone des cellules
     if (x < leftMargin || y < topMargin) return;
 
-    const { latitudes, years } = heatmapData;
     const yearIdx = Math.floor((x - leftMargin) / cellWidth);
     const latIdx = Math.floor((y - topMargin) / cellHeight);
 
@@ -217,57 +287,30 @@ export default function HeatmapView() {
       const year = years[yearIdx];
       const lat = latitudes[latIdx];
 
+      // Changer l'année TOUJOURS
       setYear(year);
 
-      if (selectedLatitudes.includes(lat)) {
-        removeLatitude(lat);
+      // Trouver tous les cellIds (indices) qui correspondent à cette latitude
+      const cellIdsForLat: number[] = [];
+      tempData.tempanomalies.forEach((cell, idx) => {
+        if (cell.lat === lat) {
+          cellIdsForLat.push(idx);
+        }
+      });
+
+      // Si on clique sur la même cellule, désélectionner
+      if (selectedCell.current?.lat === lat && selectedCell.current?.year === year) {
+        selectedCell.current = null;
+        setHighlightedCells([]);
       } else {
-        addLatitude(lat);
+        // Sinon, sélectionner la nouvelle cellule
+        selectedCell.current = { lat, year };
+        setHighlightedCells(cellIdsForLat);
       }
     }
   };
 
-  // ============================================================
-  // 🔹 GÉRER LE HOVER
-  // ============================================================
-  const handleCanvasMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const cellWidth = 28;
-    const cellHeight = 22;
-    const leftMargin = 70;
-    const topMargin = 40;
-
-    if (x < leftMargin || y < topMargin) {
-      setHoveredCell(null);
-      return;
-    }
-
-    const { latitudes, years, dataMap } = heatmapData;
-    const yearIdx = Math.floor((x - leftMargin) / cellWidth);
-    const latIdx = Math.floor((y - topMargin) / cellHeight);
-
-    if (yearIdx >= 0 && yearIdx < years.length && latIdx >= 0 && latIdx < latitudes.length) {
-      const year = years[yearIdx];
-      const lat = latitudes[latIdx];
-      const value = dataMap.get(`${lat}-${year}`);
-
-      setHoveredCell({
-        lat,
-        year,
-        value: value !== undefined ? value : null,
-        x: event.clientX,
-        y: event.clientY,
-      });
-    } else {
-      setHoveredCell(null);
-    }
-  };
 
   // ============================================================
   // 🔹 RENDU
@@ -279,7 +322,7 @@ export default function HeatmapView() {
         Latitude × Year | Click on a cell to select latitude and year
       </p>
 
-      <div className="heatmap-wrapper">
+      <div className="heatmap-wrapper" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
         <div style={{ position: "relative", display: "inline-block" }}>
           <canvas
             ref={canvasRef}
@@ -288,8 +331,6 @@ export default function HeatmapView() {
           <canvas
             ref={overlayCanvasRef}
             onClick={handleCanvasClick}
-            onMouseMove={handleCanvasMouseMove}
-            onMouseLeave={() => setHoveredCell(null)}
             style={{ 
               position: "absolute", 
               top: 0, 
@@ -299,34 +340,6 @@ export default function HeatmapView() {
             }}
           />
         </div>
-
-        {/* Tooltip */}
-        {hoveredCell && (
-          <div
-            className="heatmap-tooltip"
-            style={{
-              position: "fixed",
-              left: hoveredCell.x,
-              top: hoveredCell.y - 60,
-              transform: "translateX(-50%)",
-            }}
-          >
-            <div className="tooltip-content">
-              <strong>{hoveredCell.year}</strong> • {hoveredCell.lat}°
-              <br />
-              <span className="tooltip-value">
-                {hoveredCell.value !== null ? `${hoveredCell.value.toFixed(2)}°C` : "No data"}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Légende des couleurs */}
-      <div className="heatmap-legend">
-        <span className="legend-label">Cold</span>
-        <div className="legend-gradient"></div>
-        <span className="legend-label">Hot</span>
       </div>
 
       {selectedLatitudes.length > 0 && (

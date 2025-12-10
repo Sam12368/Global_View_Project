@@ -28,11 +28,21 @@ export default function GraphView() {
   const { currentYear, setYear } = useYear();
   
   const chartRef = useRef<ChartJS<"line"> | null>(null);
+  const currentYearRef = useRef(currentYear);
+  const [, forceUpdate] = useState({});
+  const [chartReady, setChartReady] = useState(false);
 
   // États locaux pour gérer les modes actifs
   const [selectedAreaId, setSelectedAreaId] = useState<number | null>(null);
   const [showSingleArea, setShowSingleArea] = useState(true); // Activé par défaut
   const [showGroups, setShowGroups] = useState(false);
+
+  // Mettre à jour la ref quand currentYear change
+  useEffect(() => {
+    currentYearRef.current = currentYear;
+    console.log("GraphView currentYear changed to:", currentYear);
+    forceUpdate({}); // Forcer le re-render du SVG
+  }, [currentYear]);
 
   // 🔹 Sélectionner automatiquement la Zone 1 si elle existe
   useEffect(() => {
@@ -41,10 +51,25 @@ export default function GraphView() {
     }
   }, [areas, selectedAreaId]);
 
+  // Marquer le chart comme prêt après le premier render
+  useEffect(() => {
+    if (chartRef.current && chartRef.current.scales && chartRef.current.scales.x) {
+      setChartReady(true);
+    }
+  }, [chartRef.current?.scales]);
+
   // Forcer le re-render du chart quand currentYear change
   useEffect(() => {
-    if (chartRef.current) {
-      chartRef.current.update("none"); // Update sans animation
+    const chart = chartRef.current;
+    console.log("GraphView useEffect triggered, chart exists:", !!chart, "currentYear:", currentYear);
+    if (chart) {
+      // Forcer un redraw complet
+      chart.update('active');
+      // Alternative: forcer render via requestAnimationFrame
+      requestAnimationFrame(() => {
+        chart.render();
+        console.log("GraphView chart rendered for year:", currentYear);
+      });
     }
   }, [currentYear]);
 
@@ -144,7 +169,8 @@ export default function GraphView() {
           backgroundColor: ds.color + "33",
           borderWidth: 2,
           pointRadius: 0,
-          pointHoverRadius: 5,
+          pointHoverRadius: 0, // Désactiver le grossissement au hover
+          pointHoverBorderWidth: 2, // Garder la même épaisseur
           tension: 0.1,
         };
       }),
@@ -167,7 +193,12 @@ export default function GraphView() {
       if (dataX !== undefined) {
         const year = Math.round(dataX);
         if (year >= 1880 && year <= 2025) {
+          console.log("GraphView onClick - Setting year to:", year);
           setYear(year);
+          // Forcer immédiatement le redraw
+          setTimeout(() => {
+            chart.update();
+          }, 0);
         }
       }
     },
@@ -225,30 +256,7 @@ export default function GraphView() {
         },
       },
     },
-  }), [setYear]);
-
-  // Plugin pour la ligne verticale de l'année courante
-  const verticalLinePlugin = useMemo(() => ({
-    id: "verticalLine",
-    afterDraw: (chart: ChartJS) => {
-      if (chart.tooltip && chart.tooltip.getActiveElements().length > 0) return;
-      
-      const ctx = chart.ctx;
-      const xAxis = chart.scales.x;
-      const yAxis = chart.scales.y;
-      const x = xAxis.getPixelForValue(currentYear);
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, yAxis.top);
-      ctx.lineTo(x, yAxis.bottom);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#ff8800";
-      ctx.setLineDash([5, 5]);
-      ctx.stroke();
-      ctx.restore();
-    },
-  }), [currentYear]);
+  }), [setYear, currentYear]); // Ajouter currentYear comme dépendance
 
   // ============================================================
   // 🔹 RENDU
@@ -315,14 +323,8 @@ export default function GraphView() {
                   onChange={() => setSelectedAreaId(area.id)}
                 />
                 <span
-                  style={{
-                    display: "inline-block",
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: area.color,
-                    borderRadius: "3px",
-                    marginRight: "4px",
-                  }}
+                  className="color-box"
+                  style={{ backgroundColor: area.color }}
                 />
                 <span>{area.name}</span>
               </label>
@@ -344,14 +346,8 @@ export default function GraphView() {
                   onChange={() => toggleActiveGroup(group.id)}
                 />
                 <span
-                  style={{
-                    display: "inline-block",
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: group.color,
-                    borderRadius: "3px",
-                    marginRight: "4px",
-                  }}
+                  className="color-box"
+                  style={{ backgroundColor: group.color }}
                 />
                 {group.name}
               </label>
@@ -362,13 +358,71 @@ export default function GraphView() {
 
       {/* 🔹 GRAPHIQUE CHART.JS */}
       {datasets.length > 0 && (
-        <div className="graphview-chart">
+        <div className="graphview-chart" style={{ position: 'relative' }}>
           <Line 
             ref={chartRef}
             data={chartData} 
             options={chartOptions} 
-            plugins={[verticalLinePlugin]} 
+            plugins={[]} 
           />
+          {/* Ligne verticale pour l'année courante */}
+          {chartReady && chartRef.current && chartRef.current.scales?.x && (() => {
+            const chart = chartRef.current;
+            if (!chart?.scales?.x || !chart?.scales?.y) return null;
+            
+            const xAxis = chart.scales.x;
+            const yAxis = chart.scales.y;
+            const x = xAxis.getPixelForValue(currentYear);
+            const y1 = yAxis.top;
+            const y2 = yAxis.bottom;
+            
+            console.log("Year Line - year:", currentYear, "x:", x, "y1:", y1, "y2:", y2);
+            
+            return (
+              <>
+                {/* Ligne verticale */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${x}px`,
+                    top: `${y1}px`,
+                    width: '4px',
+                    height: `${y2 - y1}px`,
+                    background: 'repeating-linear-gradient(to bottom, #fbbf24 0px, #fbbf24 10px, transparent 10px, transparent 15px)',
+                    boxShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+                    pointerEvents: 'none',
+                    zIndex: 1000,
+                    transform: 'translateX(-2px)',
+                  }}
+                />
+                {/* Label de l'année */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${x}px`,
+                    top: `${y1 - 35}px`,
+                    transform: 'translateX(-35px)',
+                    width: '70px',
+                    height: '26px',
+                    backgroundColor: '#0b0f19',
+                    border: '2px solid #fbbf24',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fbbf24',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    pointerEvents: 'none',
+                    zIndex: 1000,
+                    boxShadow: '0 0 10px rgba(251, 191, 36, 0.3)',
+                  }}
+                >
+                  {currentYear}
+                </div>
+              </>
+            );
+          })()}
         </div>
       )}
 

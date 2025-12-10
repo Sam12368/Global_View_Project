@@ -172,6 +172,15 @@
   color: #e2e8f0;
 }
 
+/* ---------- COLOR BOX ---------- */
+.color-box {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+
 /* ---------- GROUP SELECTOR (checkboxes) ---------- */
 .group-selector {
   display: flex;
