@@ -48,6 +48,7 @@ export default function WorldMap() {
   const {
     mode,                // "areas" | "latitudes"
     selectedLatitudes,
+    selectedLongitude,   // longitude sélectionnée depuis histogram
     areas,               // liste des zones (Zone 1, Zone 2, ...)
     createAreaFromCells, // appelé quand on termine un drag
     addLatitude,
@@ -333,7 +334,32 @@ export default function WorldMap() {
       });
       ctx.restore();
     }
-  }, [mode, selectedLatitudes, areas, dragStart, dragCurrent, hoverAreaId, tempData, highlightedCellIds]);
+
+    // 🟦 Carré 4x4 de la longitude sélectionnée (depuis histogram) - UNIQUEMENT en mode latitudes
+    if (mode === "latitudes" && selectedLongitude !== null && selectedLatitudes.length > 0) {
+      // Trouver toutes les cellules qui correspondent à cette longitude ET aux latitudes sélectionnées
+      const matchingCells = tempData.tempanomalies.filter(
+        (cell) => cell.lon === selectedLongitude && selectedLatitudes.includes(cell.lat)
+      );
+
+      if (matchingCells.length > 0) {
+        ctx.save();
+        ctx.strokeStyle = "rgba(251,191,36,1)"; // jaune vif
+        ctx.lineWidth = 2.5;
+
+        matchingCells.forEach((cell) => {
+          // Calculer la position du carré 4x4
+          const x = ((cell.lon + 180) / 360) * WIDTH - cellW / 2;
+          const y = ((90 - cell.lat) / 180) * HEIGHT - cellH / 2;
+
+          // Dessiner le carré
+          ctx.strokeRect(x, y, cellW, cellH);
+        });
+
+        ctx.restore();
+      }
+    }
+  }, [mode, selectedLatitudes, selectedLongitude, areas, dragStart, dragCurrent, hoverAreaId, tempData, highlightedCellIds]);
 
   // ------------------------------------------------
   // 7) DESSIN PRINCIPAL (carte + heatmap)

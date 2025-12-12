@@ -4,8 +4,16 @@ import SidePanel from "../SidePanel/SidePanel";
 import WorldMap from "../WorldMap/WorldMap";
 import AnimationBar from "../AnimationBar/AnimationBar";
 import ViewsGrid from "../ViewsGrid/ViewsGrid";
+import { useTheme } from "../../hooks/useTheme";
+import { useEffect } from "react";
 
 export const AppLayout = () => {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   return (
     <div className="app">
       <Header />

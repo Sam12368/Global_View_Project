@@ -5,6 +5,8 @@ import {
   addLatitude,
   removeLatitude,
   clearLatitudes,
+  setSelectedLongitude,
+  clearSelectedLongitude,
   createAreaFromCells,
   removeArea,
   clearAreas,
@@ -33,6 +35,7 @@ export function useSelections() {
     // ÉTAT LECTURE
     mode: state.mode,
     selectedLatitudes: state.selectedLatitudes,
+    selectedLongitude: state.selectedLongitude,
     areas: state.areas,               // Zones (Zone 1, Zone 2, ...)
     groups: state.groups,             // Group 1 = ensemble de zones
     activeGroupIds: state.activeGroupIds, // groupes cochés pour graphes
@@ -45,6 +48,10 @@ export function useSelections() {
     addLatitude: (lat: number) => dispatch(addLatitude(lat)),
     removeLatitude: (lat: number) => dispatch(removeLatitude(lat)),
     clearLatitudes: () => dispatch(clearLatitudes()),
+
+    // ACTIONS : LONGITUDE
+    setSelectedLongitude: (lon: number | null) => dispatch(setSelectedLongitude(lon)),
+    clearSelectedLongitude: () => dispatch(clearSelectedLongitude()),
 
     // ACTIONS : ZONES (AREAS)
     createAreaFromCells: (cellIds: number[]) =>

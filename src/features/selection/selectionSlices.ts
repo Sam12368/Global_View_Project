@@ -49,6 +49,9 @@ export interface SelectionState {
   // Latitudes sélectionnées
   selectedLatitudes: number[];
 
+  // Longitude sélectionnée depuis l'histogramme
+  selectedLongitude: number | null;
+
   // Zones (areas) dessinées par drag
   areas: AreaSelection[];
   nextAreaId: number; // id interne pour prochaine zone
@@ -67,6 +70,7 @@ export interface SelectionState {
 const initialState: SelectionState = {
   mode: "areas",
   selectedLatitudes: [],
+  selectedLongitude: null,
   areas: [],
   nextAreaId: 1,
   groups: [],
@@ -104,6 +108,15 @@ const selectionSlice = createSlice({
 
     clearLatitudes(state) {
       state.selectedLatitudes = [];
+    },
+
+    // LONGITUDE SÉLECTIONNÉE --
+    setSelectedLongitude(state, action: PayloadAction<number | null>) {
+      state.selectedLongitude = action.payload;
+    },
+
+    clearSelectedLongitude(state) {
+      state.selectedLongitude = null;
     },
 
     // =========================
@@ -319,6 +332,8 @@ export const {
   addLatitude,
   removeLatitude,
   clearLatitudes,
+  setSelectedLongitude,
+  clearSelectedLongitude,
   createAreaFromCells,
   removeArea,
   clearAreas,

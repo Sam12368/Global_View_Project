@@ -3,14 +3,12 @@ import "./HistogramView.css";
 import { useData } from "../../hooks/useData";
 import { useSelections } from "../../hooks/useSelection";
 import { useYear } from "../../hooks/useYear";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export default function HistogramView() {
   const { tempData, getInterpolatedValue } = useData();
-  const { selectedLatitudes, setHighlightedCells } = useSelections();
+  const { selectedLatitudes, selectedLongitude, setSelectedLongitude } = useSelections();
   const { currentYear } = useYear();
-  
-  const [selectedLongitude, setSelectedLongitude] = useState<number | null>(null);
 
   // ============================================================
   // 🔹 CALCULER LES DONNÉES DE L'HISTOGRAMME
@@ -96,14 +94,12 @@ export default function HistogramView() {
   // ============================================================
   // 🔹 GÉRER LE CLIC SUR UNE BARRE
   // ============================================================
-  const handleBarClick = (longitude: number, cellIds: number[]) => {
+  const handleBarClick = (longitude: number) => {
     // Toggle : si déjà sélectionnée, on désélectionne
     if (selectedLongitude === longitude) {
       setSelectedLongitude(null);
-      setHighlightedCells([]);
     } else {
       setSelectedLongitude(longitude);
-      setHighlightedCells(cellIds);
     }
   };
 
@@ -212,7 +208,7 @@ export default function HistogramView() {
                     stroke={isSelected ? "#fff" : "none"}
                     strokeWidth={isSelected ? 2 : 0}
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleBarClick(data.longitude, data.cellIds)}
+                    onClick={() => handleBarClick(data.longitude)}
                   />
                   
                   {/* Label de longitude (tous les 4 pour éviter surcharge) */}

@@ -4,6 +4,7 @@ import yearReducer from "../features/year/yearSlices";
 import animationReducer from "../features/animation/animationSlices";
 import viewsReducer from "../features/views/viewsSlices";
 import selectionReducer from "../features/selection/selectionSlices";
+import themeReducer from "../features/theme/themeSlices";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     animation: animationReducer,
     views: viewsReducer,
     selection: selectionReducer,
+    theme: themeReducer,
   },
 });
 
