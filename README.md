@@ -1,227 +1,200 @@
-🌍 Visualisation des Anomalies de Température Mondiale
+# 🌍 Global Temperature Visualization
 
-Application web interactive permettant de visualiser et d’analyser les anomalies de température globale entre 1880 et 2025.
+Interactive web application for visualizing and analyzing global temperature anomalies from 1880 to 2025.
 
-📋 Table des matières
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![React](https://img.shields.io/badge/React-18-61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)
+![Vite](https://img.shields.io/badge/Vite-7.2-646cff)
 
-Fonctionnalités
+## 📋 Table of Contents
+- [Features](#-features)
+- [Demo](#-demo)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
 
-Démonstration
+## ✨ Features
 
-Installation
+### 🗺️ Interactive World Map
+- **Heatmap visualization** of global temperature anomalies
+- **Two selection modes**:
+  - **Latitudes Mode**: Click to select horizontal latitude lines
+  - **Areas Mode**: Click or drag to select 4°×4° grid cells
+- Real-time visual feedback with color-coded overlays
+- Smooth animations and responsive design
 
-Utilisation
+### 📊 Multiple Visualization Views
 
-Technologies
+#### 1️⃣ Graph View
+- Time series of temperature anomalies (1880-2025)
+- Compare multiple zones or groups
+- Interactive legend with toggle selection
+- Vertical line indicating current year
 
-Structure du projet
+#### 2️⃣ Histogram View
+- Distribution of temperature anomalies by longitude
+- Click on bars to highlight corresponding grid cells on the map
+- Color-coded bars (blue for cooling, red for warming)
+- Dynamic scaling based on selected latitudes
 
-Contribution
+#### 3️⃣ Heatmap View
+- Latitude × Year matrix visualization
+- Optimized display (45 latitudes × 15 years = 675 cells)
+- Click on cells to:
+  - Change the current year
+  - Highlight the latitude across all views
+- Color gradient from blue (cold) to red (hot)
+- Toggle selection with second click
 
-✨ Fonctionnalités
-🗺️ Carte mondiale interactive
+### 🎬 Animation Controls
+- **Play/Pause** time progression
+- **Speed control** (1x, 1.5x, 2x, 2.5x, 3x)
+- **Year slider** for manual navigation
+- **Direct year input** for precise control
+- **Restart button** to reset to 1880
 
-Visualisation en heatmap des anomalies de température
+### 🎯 Advanced Selection Features
+- **Multi-area selection** with drag rectangle
+- **Group management**: Combine multiple zones for comparative analysis
+- **Latitude filtering**: Focus on specific climate zones
+- **Cross-view synchronization**: Selections update all visualizations
 
-Deux modes de sélection :
+### 🎨 Modern UI/UX
+- Responsive layout adapting to screen size
+- Smooth transitions and hover effects
+- Intuitive control panel with clear visual feedback
 
-Mode Latitudes : sélectionner des lignes horizontales
+## 🎥 Demo
 
-Mode Zones : cliquer ou faire un drag pour sélectionner des cellules 4×4°
-
-Retour visuel immédiat : coloration dynamique, surbrillances, transitions
-
-Entièrement responsive et fluide
-
-📊 Vues analytiques multiples
-1️⃣ Graphique (Graph View)
-
-Série temporelle des anomalies (1880–2025)
-
-Comparaison entre plusieurs zones ou groupes
-
-Légende interactive
-
-Ligne verticale indiquant l’année courante
-
-2️⃣ Histogramme (Histogram View)
-
-Répartition des anomalies par longitudes
-
-Clic sur une barre ⇒ mise en évidence des cellules correspondantes sur la carte
-
-Gestion des couleurs, échelle dynamique
-
-3️⃣ Heatmap 2D (Heatmap View)
-
-Matrice Année × Latitude
-
-Clic sur une cellule ⇒ met à jour l’année + sélectionne la latitude
-
-Dégradés de couleur bleu → rouge
-
-🎬 Commandes d’animation
-
-Lecture / Pause
-
-Vitesse d’animation (1× à 3×)
-
-Slider d’année
-
-Saisie manuelle de l’année
-
-Bouton de réinitialisation
-
-🎯 Sélection avancée
-
-Sélection de zones rectangulaires
-
-Création de groupes de zones pour comparer plusieurs régions du globe
-
-Sélection de latitudes climatiques
-
-Synchronisation automatique entre toutes les vues (Map ↔ Graph ↔ Heatmap ↔ Histogram)
-
-🎨 Interface moderne
-
-Layout clair et responsive
-
-Interactions naturelles
-
-Transitions visuelles et feedback instantané
-
-🎥 Démo
+```bash
+# Clone and run the project to see it in action!
 npm install
 npm run dev
+```
 
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Puis ouvrez : http://localhost:5173
+## 🚀 Installation
 
-🚀 Installation
-Prérequis
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-Node.js 18+
+### Steps
 
-npm ou yarn
-
-Étapes
+```bash
+# Clone the repository
 git clone https://github.com/Sam12368/Global_View_Project.git
+
+# Navigate to the project directory
 cd Global_View_Project/MainBranch
+
+# Install dependencies
 npm install
+
+# Start the development server
 npm run dev
+```
 
-🎮 Utilisation
-Workflow général
+## 🎮 Usage
 
-Choisir un mode (Latitudes ou Zones)
+### Basic Workflow
 
-Sélectionner sur la carte :
+1. **Select a Mode** (Latitudes or Areas) in the Control Panel
+2. **Make Selections** on the World Map:
+   - **Latitudes Mode**: Click anywhere horizontally
+   - **Areas Mode**: Click individual cells or drag a rectangle
+3. **View Analysis** in the Graph, Histogram, and Heatmap panels
+4. **Animate Over Time** using the animation controls at the bottom
+5. **Interact with Views**:
+   - Click histogram bars to highlight longitude on the map
+   - Click heatmap cells to change year and highlight latitude
+   - Toggle groups in the graph legend for comparison
 
-Mode Latitudes : clic horizontal
+### Keyboard Shortcuts
+- `Space`: Play/Pause animation
+- `←/→`: Navigate years manually
 
-Mode Zones : clic ou drag pour créer un rectangle
+## 🛠️ Technology Stack
 
-Analyser les résultats dans les vues Graphique / Histogramme / Heatmap
+### Core Technologies
+- **React 18** - UI library
+- **TypeScript 5** - Type-safe JavaScript
+- **Vite 7.2** - Fast build tool and dev server
+- **Redux Toolkit** - State management
 
-Utiliser l’animation temporelle pour observer les variations
+### Visualization & Graphics
+- **Chart.js** - Graph and histogram rendering
+- **Canvas API** - Heatmap and WorldMap rendering
+- Custom SVG overlays for interactive elements
 
-Interagir avec les autres vues :
+### Data Processing
+- **Custom interpolation** for smooth temperature transitions
+- **Memoized calculations** for optimal performance
+- **Pre-grouped data structures** for fast lookups
 
-Clic histogramme ⇒ met en surbrillance les zones
+### Styling
+- Custom CSS with CSS variables
+- Responsive design with flexbox/grid
 
-Clic heatmap ⇒ change l’année + sélectionne la latitude
+## 📁 Project Structure
 
-Graphique ⇒ sélectionner des groupes à comparer
-
-Raccourcis clavier
-
-Espace : Lecture/Pause
-
-← / → : Changer d’année
-
-🛠️ Technologies utilisées
-Technologies principales
-
-React 18
-
-TypeScript
-
-Vite
-
-Redux Toolkit
-
-Visualisation
-
-Chart.js pour les graphiques
-
-Canvas API pour la World Map & Heatmap
-
-SVG personnalisé
-
-Traitement des données
-
-Fonction d’interpolation pour lisser les valeurs entre les années
-
-Mémorisation (memoization) pour de meilleures performances
-
-Structures optimisées pour les recherches rapides
-
-Style
-
-CSS moderne (variables, flexbox, animations)
-
-Interface responsive
-
-📁 Structure du projet
+```
 MainBranch/
 ├── src/
 │   ├── app/
+│   │   ├── hooks.ts          # Redux typed hooks
+│   │   └── store.ts          # Redux store configuration
 │   ├── assets/
+│   │   └── tempanomaly_4x4grid_v2.json  # Temperature data
 │   ├── components/
-│   │   ├── AnimationBar/
-│   │   ├── Layout/
-│   │   ├── SidePanel/
-│   │   ├── ViewsGrid/
-│   │   └── WorldMap/
+│   │   ├── AnimationBar/     # Year slider & animation controls
+│   │   ├── Layout/           # App layout & header
+│   │   ├── SidePanel/        # Control panel & mode selection
+│   │   ├── ViewsGrid/        # Graph, Histogram, Heatmap views
+│   │   └── WorldMap/         # Interactive world map
 │   ├── features/
-│   ├── hooks/
-│   ├── App.tsx
-│   └── main.tsx
-├── public/
+│   │   ├── animation/        # Animation state
+│   │   ├── data/             # Temperature data state
+│   │   ├── selection/        # Areas & latitudes selection state
+│   │   ├── views/            # Views visibility state
+│   │   └── year/             # Current year state
+│   ├── hooks/                # Custom React hooks
+│   ├── App.tsx               # Main app component
+│   └── main.tsx              # App entry point
+├── public/                   # Static assets
 ├── package.json
-└── vite.config.ts
+├── vite.config.ts
+└── tsconfig.json
+```
 
-🤝 Contribution
+## 🤝 Contributing
 
-Les contributions sont les bienvenues !
-Étapes :
+Contributions are welcome! Please follow these steps:
 
-Fork du projet
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Nouvelle branche :
+## 📄 License
 
-git checkout -b feature/NouvelleFonctionnalite
+This project is part of an academic/research initiative for climate data visualization.
 
+## 👥 Authors
 
-Commits :
+- [@Sam12368](https://github.com/Sam12368)
 
-git commit -m "Ajout d'une nouvelle fonctionnalité"
+## 🙏 Acknowledgments
 
+- Temperature anomaly data based on global climate records
+- Inspired by NASA's climate visualization tools
+- Built with modern web technologies for optimal performance
 
-Push + Pull Request
+---
 
-📄 Licence
-
-Projet réalisé dans le cadre d’une initiative académique de visualisation climatique.
-
-👥 Auteur
-
-@Sam12368
-
-🙏 Remerciements
-
-Données basées sur les mesures climatiques globales
-
-Inspiré par les outils de visualisation de la NASA
-
-Développé avec des technologies modernes de haute performance
+**Note**: For detailed feature documentation, see [FEATURES.md](./manuel.md)
