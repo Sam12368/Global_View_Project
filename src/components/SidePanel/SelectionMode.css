@@ -93,7 +93,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.4rem;
   transition: background 0.2s ease;
+  overflow: hidden;
+  flex-wrap: nowrap;
 }
 
 .selection-item:hover {
@@ -110,6 +113,10 @@
   font-weight: 600;
   border: 1px solid rgba(59,130,246,0.35);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 /* REMOVE BUTTON × */
@@ -120,9 +127,11 @@
   cursor: pointer;
   border-radius: 6px;
   padding: 0.1rem 0.25rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   flex-shrink: 0;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
 .remove-chip:hover {

@@ -16,7 +16,7 @@
 
     useEffect(() => {
       if (!playing) return;
-      const baseDelay = 600;
+      const baseDelay = 200;
       const delay = baseDelay / speed;
       const id = setInterval(() => {
         next();

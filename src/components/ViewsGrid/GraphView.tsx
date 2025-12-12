@@ -264,7 +264,7 @@ export default function GraphView() {
   if (areas.length === 0) {
     return (
       <div className="graphview-container">
-        <h2>📈 Temperature Anomaly Graph</h2>
+        <h2>Temperature Anomaly Graph</h2>
         <div className="graphview-placeholder">
           <p>⚠️ No areas selected. Draw rectangular zones on the map to see temperature anomaly trends.</p>
         </div>
@@ -274,7 +274,7 @@ export default function GraphView() {
 
   return (
     <div className="graphview-container">
-      <h2>📈 Temperature Anomaly Graph</h2>
+      <h2>Temperature Anomaly Graph</h2>
 
       {/* 🔹 BOUTONS DE MODES */}
       <div className="graph-mode-buttons">

@@ -3,14 +3,12 @@ import "./HistogramView.css";
 import { useData } from "../../hooks/useData";
 import { useSelections } from "../../hooks/useSelection";
 import { useYear } from "../../hooks/useYear";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export default function HistogramView() {
   const { tempData, getInterpolatedValue } = useData();
-  const { selectedLatitudes, setHighlightedCells } = useSelections();
+  const { selectedLatitudes, selectedLongitude, setSelectedLongitude } = useSelections();
   const { currentYear } = useYear();
-  
-  const [selectedLongitude, setSelectedLongitude] = useState<number | null>(null);
 
   // ============================================================
   // 🔹 CALCULER LES DONNÉES DE L'HISTOGRAMME
@@ -96,14 +94,12 @@ export default function HistogramView() {
   // ============================================================
   // 🔹 GÉRER LE CLIC SUR UNE BARRE
   // ============================================================
-  const handleBarClick = (longitude: number, cellIds: number[]) => {
+  const handleBarClick = (longitude: number) => {
     // Toggle : si déjà sélectionnée, on désélectionne
     if (selectedLongitude === longitude) {
       setSelectedLongitude(null);
-      setHighlightedCells([]);
     } else {
       setSelectedLongitude(longitude);
-      setHighlightedCells(cellIds);
     }
   };
 
@@ -134,7 +130,7 @@ export default function HistogramView() {
   if (selectedLatitudes.length === 0) {
     return (
       <div className="histogramview-container">
-        <h2>📊 Longitude Histogram</h2>
+        <h2>Longitude Histogram</h2>
         <div className="histogramview-placeholder">
           <p>⚠️ Select latitudes on the map to view the histogram.</p>
         </div>
@@ -145,7 +141,7 @@ export default function HistogramView() {
   if (histogramData.length === 0) {
     return (
       <div className="histogramview-container">
-        <h2>📊 Longitude Histogram</h2>
+        <h2>Longitude Histogram</h2>
         <div className="histogramview-placeholder">
           <p>No data available for year {currentYear}.</p>
         </div>
@@ -155,7 +151,7 @@ export default function HistogramView() {
 
   return (
     <div className="histogramview-container">
-      <h2>📊 Longitude Histogram</h2>
+      <h2>Longitude Histogram</h2>
       <p className="histogram-subtitle">
         Temperature anomalies by longitude for year {currentYear}
       </p>
@@ -212,7 +208,7 @@ export default function HistogramView() {
                     stroke={isSelected ? "#fff" : "none"}
                     strokeWidth={isSelected ? 2 : 0}
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleBarClick(data.longitude, data.cellIds)}
+                    onClick={() => handleBarClick(data.longitude)}
                   />
                   
                   {/* Label de longitude (tous les 4 pour éviter surcharge) */}

@@ -149,7 +149,7 @@ export default function HeatmapView() {
       });
     });
 
-    // Labels années (toutes visibles, rotation pour meilleure lisibilité)
+    // Labels années (en bas, rotation pour meilleure lisibilité)
     ctx.fillStyle = "#7aa2ff";
     ctx.font = "bold 11px sans-serif";
     ctx.textAlign = "center";
@@ -157,7 +157,7 @@ export default function HeatmapView() {
     years.forEach((year, i) => {
       ctx.save();
       const x = leftMargin + i * cellWidth + cellWidth / 2;
-      const y = topMargin - 12;
+      const y = topMargin + latitudes.length * cellHeight + 8;
       ctx.translate(x, y);
       ctx.rotate(-Math.PI / 6); // Rotation -30°
       ctx.fillText(year.toString(), 0, 0);
@@ -317,7 +317,7 @@ export default function HeatmapView() {
   // ============================================================
   return (
     <div className="heatmapview-container">
-      <h2>🌡️ Temperature Anomaly Heatmap</h2>
+      <h2>Temperature Anomaly Heatmap</h2>
       <p className="heatmap-subtitle">
         Latitude × Year | Click on a cell to select latitude and year
       </p>
